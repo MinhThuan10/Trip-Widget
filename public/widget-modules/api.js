@@ -31,20 +31,47 @@ export function initApiHandler({ backendUrl, userId, dom }) {
                             if (fare.flights) {
                                 fare.flights.forEach(flight => {
                                     const airline = flight.airline || 'OTHER';
+                                    const stopNumber = flight.stop_number !== undefined ? flight.stop_number : 0;
                                     const segments = flight.segments || [];
-                                    segments.forEach(seg => {
+                                    if (segments.length > 0) {
+                                        segments.forEach(seg => {
+                                            allFlights.push({
+                                                airline: airline,
+                                                cabinClass: seg.cabin_class || 'STANDARD',
+                                                flightNumber: seg.flight_number || flight.flight_number,
+                                                startPoint: seg.start_point || flight.start_point,
+                                                endPoint: seg.end_point || flight.end_point,
+                                                startTime: seg.start_time || flight.start_date,
+                                                endTime: seg.end_time || flight.end_date,
+                                                duration: seg.duration || flight.duration || '',
+                                                stopNumber: stopNumber,
+                                                plane: seg.plane || '',
+                                                handBaggage: seg.hand_baggage || '',
+                                                allowanceBaggage: seg.allowance_baggage || '',
+                                                seat: seg.seat !== undefined ? seg.seat : 'N/A',
+                                                totalAmount: fare.total_amount || 0,
+                                                currency: fare.currency || 'VND'
+                                            });
+                                        });
+                                    } else {
                                         allFlights.push({
                                             airline: airline,
-                                            cabinClass: seg.cabin_class || 'STANDARD',
-                                            flightNumber: seg.flight_number || flight.flight_number,
-                                            startPoint: seg.start_point || flight.start_point,
-                                            endPoint: seg.end_point || flight.end_point,
-                                            startTime: seg.start_time || flight.start_date,
-                                            endTime: seg.end_time || flight.end_date,
+                                            cabinClass: 'STANDARD',
+                                            flightNumber: flight.flight_number || 'N/A',
+                                            startPoint: flight.start_point || '',
+                                            endPoint: flight.end_point || '',
+                                            startTime: flight.start_date || '',
+                                            endTime: flight.end_date || '',
+                                            duration: flight.duration || '',
+                                            stopNumber: stopNumber,
+                                            plane: '',
+                                            handBaggage: '',
+                                            allowanceBaggage: '',
+                                            seat: 'N/A',
                                             totalAmount: fare.total_amount || 0,
                                             currency: fare.currency || 'VND'
                                         });
-                                    });
+                                    }
                                 });
                             }
                         });
@@ -57,8 +84,8 @@ export function initApiHandler({ backendUrl, userId, dom }) {
 
         if (allFlights.length > 0) {
             const containerDiv = document.createElement('div');
-            containerDiv.style.cssText = 'font-size: 13px; display: flex; flex-direction: column; gap: 8px;';
-
+            containerDiv.style.cssText = 'font-size: 13px; display: flex; flex-direction: column; gap: 8px; position: relative;';
+            
             const title = document.createElement('div');
             title.innerHTML = `<strong>${msg.content || msg.reply || 'Danh sách chuyến bay'}</strong>`;
             containerDiv.appendChild(title);
@@ -85,6 +112,45 @@ export function initApiHandler({ backendUrl, userId, dom }) {
 
             const viewContainer = document.createElement('div');
             containerDiv.appendChild(viewContainer);
+
+            // Detail popup / tooltip element
+            const detailPopup = document.createElement('div');
+            detailPopup.style.cssText = 'display: none; position: absolute; bottom: 0; left: 0; right: 0; background: #fff; border: 1px solid #ccc; border-radius: 8px; padding: 12px; z-index: 999; box-shadow: 0 4px 15px rgba(0,0,0,0.2); font-size: 12px; color: #333; max-height: 400px; overflow-y: auto;';
+            containerDiv.appendChild(detailPopup);
+
+            detailPopup.onmouseleave = () => {
+                detailPopup.style.display = 'none';
+            };
+
+            function showDetails(f) {
+                const stopText = f.stopNumber === 0 ? 'Bay thẳng' : `${f.stopNumber} điểm dừng`;
+                detailPopup.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px solid #eee; padding-bottom: 4px;">
+                        <strong>Chi tiết hạng ghế & chuyến bay</strong>
+                        <button id="close-popup" style="background: none; border: none; font-size: 16px; cursor: pointer;">&times;</button>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 4px;">
+                        <div><strong>Hãng bay:</strong> ${f.airline}</div>
+                        <div><strong>Mã chuyến bay:</strong> ${f.flightNumber}</div>
+                        <div><strong>Loại ghế bay (Cabin):</strong> ${f.cabinClass}</div>
+                        <div><strong>Hành trình:</strong> ${f.startPoint} ➔ ${f.endPoint}</div>
+                        <div><strong>Giờ khởi hành:</strong> ${f.startTime ? new Date(f.startTime).toLocaleString() : ''}</div>
+                        <div><strong>Giờ đến:</strong> ${f.endTime ? new Date(f.endTime).toLocaleString() : ''}</div>
+                        <div><strong>Thời gian bay:</strong> ${f.duration} phút</div>
+                        <div><strong>Hành trình bay:</strong> ${stopText}</div>
+                        <div><strong>Mã máy bay:</strong> ${f.plane || 'N/A'}</div>
+                        <div><strong>Hành lý xách tay:</strong> ${f.handBaggage || 'N/A'}</div>
+                        <div><strong>Hành lý kí gửi:</strong> ${f.allowanceBaggage || 'N/A'}</div>
+                        <div><strong>Số lượng ghế còn:</strong> ${f.seat}</div>
+                        <div><strong>Tổng tiền (đã gồm thuế phí):</strong> <span style="color: #007bff; font-weight: bold;">${f.totalAmount ? f.totalAmount.toLocaleString() + ' ' + f.currency : 'Liên hệ'}</span></div>
+                    </div>
+                    <button disabled style="margin-top: 10px; width: 100%; padding: 6px; background: #ccc; color: #666; border: none; border-radius: 4px; cursor: not-allowed; font-weight: bold;">Chọn (Tạm khóa)</button>
+                `;
+                detailPopup.style.display = 'block';
+                document.getElementById('close-popup').onclick = () => {
+                    detailPopup.style.display = 'none';
+                };
+            }
 
             function renderFilters() {
                 filterContainer.innerHTML = '';
@@ -147,22 +213,54 @@ export function initApiHandler({ backendUrl, userId, dom }) {
                 table.innerHTML = `
                     <thead>
                         <tr style="background: #f1f1f1; border-bottom: 1px solid #ddd;">
-                            <th style="padding: 6px; text-align: left;">Chuyến bay</th>
-                            <th style="padding: 6px; text-align: left;">Hành trình & Giờ</th>
-                            <th style="padding: 6px; text-align: right;">Giá vé</th>
+                            <th style="padding: 6px; text-align: left; white-space: nowrap;">Chuyến bay</th>
+                            <th style="padding: 6px; text-align: left; white-space: nowrap;">Hành trình & Giờ</th>
+                            <th style="padding: 6px; text-align: right; white-space: nowrap;">Giá vé</th>
                         </tr>
                     </thead>
                     <tbody>
-                        ${filteredFlights.map(f => `
-                            <tr style="border-bottom: 1px solid #eee;">
-                                <td style="padding: 6px;"><strong>${f.airline}</strong><br/>${f.flightNumber}</td>
-                                <td style="padding: 6px;">${f.startPoint} ➔ ${f.endPoint}<br/><small>${new Date(f.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</small></td>
-                                <td style="padding: 6px; text-align: right; font-weight: bold; color: #007bff;">${f.totalAmount ? f.totalAmount.toLocaleString() + ' ' + f.currency : 'Liên hệ'}</td>
-                            </tr>
-                        `).join('')}
+                        ${filteredFlights.map((f, idx) => {
+                            const startTimeStr = f.startTime ? new Date(f.startTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : '';
+                            const endTimeStr = f.endTime ? new Date(f.endTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : '';
+                            const stopText = f.stopNumber === 0 ? 'Bay thẳng' : `${f.stopNumber} điểm dừng`;
+
+                            return `
+                                <tr style="border-bottom: 1px solid #eee;">
+                                    <td style="padding: 6px;">
+                                        <strong>${f.flightNumber}</strong>
+                                        <br/><small style="color: #666;">${stopText}</small>
+                                    </td>
+                                    <td style="padding: 6px; white-space: nowrap;">
+                                        ${f.startPoint} ➔ ${f.endPoint}
+                                        <br/><small style="color: #007bff; font-weight: bold; white-space: nowrap;">${startTimeStr} ➔ ${endTimeStr}</small>
+                                    </td>
+                                    <td style="padding: 6px; text-align: right;">
+                                        <span class="price-link" data-index="${idx}" style="font-weight: bold; color: #007bff; cursor: pointer; text-decoration: underline; white-space: nowrap;">
+                                            ${f.totalAmount ? f.totalAmount.toLocaleString() + ' ' + f.currency : 'Liên hệ'}
+                                        </span>
+                                    </td>
+                                </tr>
+                            `;
+                        }).join('')}
                     </tbody>
                 `;
+
                 viewContainer.appendChild(table);
+
+                const priceLinks = viewContainer.querySelectorAll('.price-link');
+                priceLinks.forEach(link => {
+                    const idx = link.getAttribute('data-index');
+                    const flightObj = filteredFlights[idx];
+                    link.onmouseenter = () => showDetails(flightObj);
+                    link.onmouseleave = (e) => {
+                        setTimeout(() => {
+                            if (!detailPopup.matches(':hover') && !link.matches(':hover')) {
+                                detailPopup.style.display = 'none';
+                            }
+                        }, 100);
+                    };
+                    link.onclick = () => showDetails(flightObj);
+                });
             }
 
             renderFilters();
@@ -196,6 +294,7 @@ export function initApiHandler({ backendUrl, userId, dom }) {
             if (!res.ok) {
                 throw new Error(`HTTP ${res.status}`);
             }
+
             const data = await res.json();
 
             dom.messages.innerHTML = '';
@@ -269,6 +368,7 @@ export function initApiHandler({ backendUrl, userId, dom }) {
                     userId: userId
                 })
             });
+
             const data = await res.json();
 
             const loadingElement = document.getElementById(loadingId);
@@ -279,11 +379,10 @@ export function initApiHandler({ backendUrl, userId, dom }) {
             if (!res.ok) {
                 throw new Error(data.error || `HTTP ${res.status}`);
             }
-            // Nếu trả về mảng messages (như server port 8000)
+
             if (data.messages && Array.isArray(data.messages)) {
                 data.messages.forEach((msg, index) => {
                     const sender = msg.role === 'user' ? 'user' : 'bot';
-                    // Chỉ render các message assistant mới nhất hoặc tất cả message trả về
                     if (msg.role === 'assistant') {
                         const isLast = index === data.messages.length - 1;
                         if (msg.message_type === 'flight_table') {

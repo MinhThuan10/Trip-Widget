@@ -90,12 +90,10 @@ app.post('/api/chat', async (req, res) => {
 
         let apiData = { reply: `Xin lỗi, không thể kết nối đến hệ thống xử lý chat (${chatApiUrl}).` };
         try {
-            const headers = { 'Content-Type': 'application/json' };
-            if (chatApiKey) {
-                headers['Authorization'] = `Bearer ${chatApiKey}`;
-                // Hoặc nếu cần dạng x-api-key:
-                headers['x-api-key'] = chatApiKey;
-            }
+            const headers = {
+                'Content-Type': 'application/json',
+                'X-API-Key': chatApiKey,
+            };
 
             const apiRes = await fetch(chatApiUrl, {
                 method: 'POST',
