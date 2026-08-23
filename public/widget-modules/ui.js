@@ -5,7 +5,10 @@
     container.innerHTML = `
         <div id="chat-widget-window">
             <div id="chat-widget-header">
-                <span>AI Support Chat</span>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <img src="http://localhost:3000/widget-modules/logo.png" alt="Logo" style="width: 28px; height: 28px; border-radius: 50%; object-fit: cover;" />
+                    <span>Trip Chat</span>
+                </div>
                 <button id="chat-widget-close" type="button">&times;</button>
             </div>
 
@@ -19,14 +22,15 @@
                     autocomplete="off"
                 />
 
-                <button id="chat-widget-send" type="button">
-                    Gửi
+                <button id="chat-widget-send" type="button" title="Gửi">
+                    &#10148;
                 </button>
             </div>
         </div>
 
         <button id="chat-widget-btn" type="button">
-            &#128172;
+            <img src="http://localhost:3000/widget-modules/logo.png" alt="Logo" />
+            <span>Chat với Trip</span>
         </button>
     `;
 

@@ -4,29 +4,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Trang Web Demo Tích Hợp Chat Widget</title>
-
+    <title>Trip AI - Trợ lý Đặt vé máy bay thông minh</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 40px;
+            padding: 0;
             background: #f0f2f5;
             color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
 
         .container {
-            max-width: 800px;
-            margin: 0 auto;
+            max-width: 700px;
             background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
         }
 
         h1 {
             color: #007bff;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .features {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .feature-card {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            flex: 1;
+            font-size: 14px;
         }
     </style>
 
@@ -37,21 +72,22 @@
 <body>
 
     <div class="container">
-        <h1>Chào mừng đến với Website Demo!</h1>
-
+        <img src="http://localhost:3000/widget-modules/logo.png" alt="Trip Logo" class="logo">
+        <h1>Trip AI Agent</h1>
         <p>
-            Đây là một trang web độc lập bất kỳ
-            (ví dụ: Landing Page, Shop Bán Hàng, Blog...).
+            Trợ lý ảo thông minh chuyên gia tìm kiếm, tư vấn và đặt vé máy bay nhanh chóng, chính xác. 
+            Hỗ trợ tra cứu chuyến bay nội địa, so sánh giá vé giữa các hãng hàng không và gợi ý lịch trình tối ưu nhất cho bạn.
         </p>
 
-        <p>
-            Bạn có thể nhìn thấy bong bóng chat ở góc dưới bên phải màn hình.
-            Hãy bấm vào đó để thử nghiệm trò chuyện với trợ lý AI Gemini tích hợp!
-        </p>
+        <div class="features">
+            <div class="feature-card">✈️ Tra cứu chuyến bay thời gian thực</div>
+            <div class="feature-card">💰 So sánh giá & hạng ghế</div>
+            <div class="feature-card">🤖 Tư vấn thông minh 24/7</div>
+        </div>
     </div>
 
     <!-- Đoạn mã nhúng Chat Widget duy nhất -->
-    <script type="module" src="/widget.js" data-backend-url="">
+    <script type="module" src="http://localhost:3000/widget.js" data-backend-url="http://localhost:3000">
     </script>
 
 </body>

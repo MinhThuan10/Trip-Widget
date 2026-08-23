@@ -11,18 +11,17 @@
         }
 
         #chat-widget-btn {
-            width: 60px !important;
-            height: 60px !important;
-            border-radius: 50% !important;
+            height: 50px !important;
+            padding: 0 16px 0 8px !important;
+            border-radius: 25px !important;
             background-color: #007bff !important;
             color: white !important;
             border: none !important;
             cursor: pointer !important;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3) !important;
-            font-size: 24px !important;
             display: flex !important;
             align-items: center !important;
-            justify-content: center !important;
+            gap: 10px !important;
             transition: transform 0.2s !important;
         }
 
@@ -30,10 +29,23 @@
             transform: scale(1.05) !important;
         }
 
+        #chat-widget-btn img {
+            width: 36px !important;
+            height: 36px !important;
+            border-radius: 50% !important;
+            object-fit: cover !important;
+        }
+
+        #chat-widget-btn span {
+            font-size: 15px !important;
+            font-weight: bold !important;
+            white-space: nowrap !important;
+        }
+
         #chat-widget-window {
             display: none;
             position: absolute !important;
-            bottom: 80px !important;
+            bottom: 70px !important;
             right: 0 !important;
             width: 420px !important;
             height: 600px !important;
@@ -117,11 +129,14 @@
             background: #007bff !important;
             color: white !important;
             border: none !important;
-            padding: 0 15px !important;
+            padding: 0 12px !important;
             margin-left: 8px !important;
             border-radius: 4px !important;
             cursor: pointer !important;
-            font-weight: bold !important;
+            font-size: 16px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
         }
 
         #chat-widget-send:hover {
@@ -139,7 +154,7 @@
                 height: calc(100vh - 100px) !important;
                 max-height: 600px !important;
                 right: 0 !important;
-                bottom: 70px !important;
+                bottom: 60px !important;
             }
         }
     `;
