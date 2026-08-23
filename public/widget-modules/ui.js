@@ -1,12 +1,14 @@
 ﻿export function createWidgetDOM() {
     const container = document.createElement('div');
+    let backendUrl = window.CHAT_WIDGET_BACKEND_URL || 'http://localhost:3000';
+
     container.id = 'chat-widget-container';
 
     container.innerHTML = `
         <div id="chat-widget-window">
             <div id="chat-widget-header">
                 <div style="display: flex; align-items: center; gap: 8px;">
-                    <img src="http://localhost:3000/widget-modules/logo.png" alt="Logo" style="width: 28px; height: 28px; border-radius: 50%; object-fit: cover;" />
+                    <img src="${backendUrl}/widget-modules/logo.png" alt="Logo" style="width: 28px; height: 28px; border-radius: 50%; object-fit: cover;" />
                     <span>Trip Chat</span>
                 </div>
                 <button id="chat-widget-close" type="button">&times;</button>
@@ -29,7 +31,7 @@
         </div>
 
         <button id="chat-widget-btn" type="button">
-            <img src="http://localhost:3000/widget-modules/logo.png" alt="Logo" />
+            <img src="${backendUrl}/widget-modules/logo.png" alt="Logo" />
             <span>Chat với Trip</span>
         </button>
     `;
