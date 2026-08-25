@@ -1,6 +1,6 @@
 ﻿export function createWidgetDOM() {
     const container = document.createElement('div');
-    let backendUrl = window.CHAT_WIDGET_BACKEND_URL || 'http://localhost:3000';
+    let backendUrl = window.CHAT_WIDGET_BACKEND_URL || 'https://trip-widget.vercel.app';
 
     container.id = 'chat-widget-container';
 

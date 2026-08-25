@@ -11,7 +11,7 @@
     }
 
     const scripts = document.getElementsByTagName('script');
-    let backendUrl = window.CHAT_WIDGET_BACKEND_URL || 'http://localhost:3000';
+    let backendUrl = window.CHAT_WIDGET_BACKEND_URL || 'https://trip-widget.vercel.app';
 
     for (const script of scripts) {
         if (script.src && script.src.includes('widget.js')) {

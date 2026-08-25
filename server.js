@@ -7,8 +7,8 @@ require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 3000;
-const backendUrl = process.env.BACKEND_URL || `http://localhost:${port}`;
-const chatApiUrl = process.env.CHAT_API_URL || 'http://localhost:8000/api/v1/chat';
+const backendUrl = process.env.BACKEND_URL || `https://trip-widget.vercel.app`;
+const chatApiUrl = process.env.CHAT_API_URL || 'https://trip-agent-seven.vercel.app/api/v1/chat';
 const chatApiKey = process.env.CHAT_API_KEY || '';
 
 app.use(cors());
@@ -121,5 +121,5 @@ app.post('/api/chat', async (req, res) => {
 });
 
 app.listen(port, () => {
-    console.log(`Chat widget server running at http://localhost:${port}`);
+    console.log(`Chat widget server running at https://trip-widget.vercel.app`);
 });
